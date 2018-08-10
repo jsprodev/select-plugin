@@ -1,0 +1,43 @@
+html,  body {
+    font-size: 16px;
+}
+
+.hide {
+    display: none !important;
+}
+
+ #searchSpan input {
+    width: 250px;
+    box-sizing: border-box;
+    border: 2px solid #5897fb;
+    padding: 0px 5px;
+    height: 30px;
+    border-radius: 6px;
+    color: #bbb;
+}
+
+#itemsSpan ul {
+    box-sizing: border-box;
+    list-style: none;
+    border: 2px solid #007AFF;
+    border-top: none;
+    display: block;
+    margin: 0px;
+    padding: 0px;
+    width: 250px;
+    border-radius: 6px;
+}
+
+#itemsSpan ul li {
+    padding: 2px 5px;
+}
+
+#itemsSpan ul li:hover {
+    background-color:#5AC8FA;
+    color: white;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid #007AFF !important;
+}
