@@ -10,7 +10,7 @@ let searchSpan = document.createElement('span');
 searchSpan.id = 'searchSpan';
 let input = document.createElement('input');
 input.id = 'searchInput';
-input.placeholder = 'Search';
+input.placeholder = 'Search: Type atleast 3 characters';
 searchSpan.appendChild(input);
 parent.appendChild(searchSpan);
 
@@ -24,7 +24,8 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
     let input, res;
     input = document.getElementById('searchInput');
     if (input.value.length == 0) {
-        ul.innerHTML = '';
+        ul.remove();
+        input.classList.remove('search-input-0-border-radius');
     }
     if (input.value.length >= 3) {
         if(xhr != null) {
@@ -35,6 +36,9 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
         xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 400) {
                 res = JSON.parse(xhr.responseText);
+            }
+            // make li's of search results
+            if (res != null) {
                 for (let i  = 0; i < res.length; i++) {
                     console.log(res[i].name); // debugging 
                     let items = document.createElement('li');
@@ -42,7 +46,19 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
                     ul.appendChild(items);
                     itemsSpan.appendChild(ul);
                     parent.appendChild(itemsSpan);
+                    input.classList.add('search-input-0-border-radius');
+                    // change input value to selected upon click
+                    document.querySelector('#items').children[i].addEventListener('click', function() {
+                        input.value = this.innerText;
+                    });
                 }
+            } else {
+                let noResultsFound = document.createElement('li');
+                noResultsFound.innerHTML = 'no results found';
+                ul.appendChild(noResultsFound);
+                itemsSpan.appendChild(ul);
+                parent.appendChild(itemsSpan);
+                input.classList.add('search-input-0-border-radius');
             }
         }
         xhr.open('GET', 'https://restcountries.eu/rest/v2/name/' + input.value , true);
