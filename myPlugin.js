@@ -22,20 +22,33 @@ jQuery.fn.myPlugin = function(className) {
     ul.id = 'items';
 
     // search function onkeypress
-    document.getElementById('searchInput').addEventListener('keyup', function() {
+    document.getElementById('searchInput').addEventListener('keyup', function(event) {
+
         let input, res;
         input = document.getElementById('searchInput');
+
         if (input.value.length == 0) {
             ul.remove();
             input.classList.remove('search-input-0-border-radius');
         }
+
+        if (event.key == 'ArrowLeft' || event.key == 'ArrowRight') {
+            console.log('ArrowLeft or ArrowRight is fired');
+            return false;
+        }
+
         if (input.value.length >= 3) {
-            if(xhr != null) {
+
+            if (xhr != null) {
                 xhr.abort();
+                console.log('abort is fired');
             }
+
             ul.innerHTML = '';
             xhr = new XMLHttpRequest();
+
             xhr.onload = function () {
+                
                 if (xhr.status >= 200 && xhr.status < 400) {
                     res = JSON.parse(xhr.responseText);
                 }
@@ -62,13 +75,26 @@ jQuery.fn.myPlugin = function(className) {
                     parent.appendChild(itemsSpan);
                     input.classList.add('search-input-0-border-radius');
                 }
+
+                // if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
+                //     console.log('ArrowUp or ArrowDown is fired');
+                //     return false;
+                // }
+
             }
             xhr.open('GET', 'https://restcountries.eu/rest/v2/name/' + input.value , true);
             xhr.send();
+            return false;
+
         }        
     });
 
+
+
+
 }
+
+
 
  // convert select options to li items
     // let itemsSpan = document.createElement('span');
