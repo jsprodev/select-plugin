@@ -1,9 +1,9 @@
-jQuery.fn.myPlugin = function() {
+jQuery.fn.myPlugin = function(className) {
 
     let xhr = null;
 
     // get the select element and its parent
-    let select = document.querySelector('.myPlugin');
+    let select = document.querySelector('.' + className);
     let parent = select.parentElement;
     select.classList.add('hide');
 
