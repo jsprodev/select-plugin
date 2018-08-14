@@ -10,10 +10,10 @@ jQuery.fn.myPlugin = function(className) {
     // create input to search the items
     let searchSpan = document.createElement('span');
     searchSpan.id = 'searchSpan';
-    let input = document.createElement('input');
-    input.id = 'searchInput';
-    input.placeholder = 'Search: Type atleast 3 characters';
-    searchSpan.appendChild(input);
+    let searchInput = document.createElement('input');
+    searchInput.id = 'searchInput';
+    searchInput.placeholder = 'Search: Type atleast 3 characters';
+    searchSpan.appendChild(searchInput);
     parent.appendChild(searchSpan);
 
     let itemsSpan = document.createElement('span');
@@ -22,23 +22,20 @@ jQuery.fn.myPlugin = function(className) {
     ul.id = 'items';
 
     // search function onkeypress
+    let input, res, items, increment = 0;
     document.getElementById('searchInput').addEventListener('keyup', function(event) {
-
-        let input, res;
         input = document.getElementById('searchInput');
 
         if (input.value.length == 0) {
             ul.remove();
             input.classList.remove('search-input-0-border-radius');
         }
-
+        // bypass xhr on left and right arrow key press
         if (event.key == 'ArrowLeft' || event.key == 'ArrowRight') {
-            console.log('ArrowLeft or ArrowRight is fired');
             return false;
         }
 
         if (input.value.length >= 3) {
-
             if (xhr != null) {
                 xhr.abort();
                 console.log('abort is fired');
@@ -48,15 +45,14 @@ jQuery.fn.myPlugin = function(className) {
             xhr = new XMLHttpRequest();
 
             xhr.onload = function () {
-                
                 if (xhr.status >= 200 && xhr.status < 400) {
                     res = JSON.parse(xhr.responseText);
                 }
                 // make li's of search results
                 if (res != null) {
-                    for (let i  = 0; i < res.length; i++) {
+                    for (let i  = 0; i < res.length; i ++) {
                         console.log(res[i].name); // debugging 
-                        let items = document.createElement('li');
+                        items = document.createElement('li');
                         items.innerHTML = res[i].name;
                         ul.appendChild(items);
                         itemsSpan.appendChild(ul);
@@ -75,25 +71,42 @@ jQuery.fn.myPlugin = function(className) {
                     parent.appendChild(itemsSpan);
                     input.classList.add('search-input-0-border-radius');
                 }
-
-                // if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
-                //     console.log('ArrowUp or ArrowDown is fired');
-                //     return false;
-                // }
-
             }
             xhr.open('GET', 'https://restcountries.eu/rest/v2/name/' + input.value , true);
             xhr.send();
-            return false;
-
         }        
     });
 
-
-
-
 }
 
+        // hover items on arrow down and arrow up
+        // if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
+        //     console.log('ArrowUp or ArrowDown is fired');
+        //     let itemsLength  = ul.children.length;
+
+        //     if (ul.children.length > 0) {
+        //         if (increment == 0) {
+        //             console.log('if is fired ' + increment + ' , ' + itemsLength);
+        //             ul.children[increment].style.backgroundColor = '#5AC8FA';
+        //             ul.children[increment].style.color = 'white';
+        //             increment ++;
+        //         } else if (increment > 0 && increment < itemsLength) {
+        //             console.log('else if is fired ' + increment + ' , ' + itemsLength);
+        //             ul.children[increment - 1].style.backgroundColor = 'white';
+        //             ul.children[increment - 1].style.color = 'black';
+        //             ul.children[increment].style.backgroundColor = '#5AC8FA';
+        //             ul.children[increment].style.color = 'white';
+        //             increment ++;
+        //         } else {
+        //             console.log('else is fired ' + increment + ' , ' + itemsLength);
+        //             ul.children[increment - 1].style.backgroundColor = 'white';
+        //             ul.children[increment - 1].style.color = 'black';
+        //             increment = 0;
+        //             return false;
+        //         }
+        //     }
+        //     return false;
+        // }
 
 
  // convert select options to li items

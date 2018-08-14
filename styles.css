@@ -45,8 +45,8 @@ html,  body {
 }
 
 #itemsSpan ul li:hover {
-    background-color:#5AC8FA;
-    color: white;
+    background-color:#5AC8FA !important;
+    color: white !important;
 }
 
 input:focus {
