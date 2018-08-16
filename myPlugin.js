@@ -12,6 +12,7 @@ jQuery.fn.myPlugin = function(className) {
     searchSpan.id = 'searchSpan';
     let searchInput = document.createElement('input');
     searchInput.id = 'searchInput';
+    searchInput.className = 'search-input';
     searchInput.placeholder = 'Search: Type atleast 3 characters';
     searchSpan.appendChild(searchInput);
     parent.appendChild(searchSpan);
@@ -61,6 +62,8 @@ jQuery.fn.myPlugin = function(className) {
                         // change input value to selected upon click
                         document.querySelector('#items').children[i].addEventListener('click', function() {
                             input.value = this.innerText;
+                            ul.remove();
+                            input.classList.remove('search-input-0-border-radius');
                         });
                     }
                 } else {
