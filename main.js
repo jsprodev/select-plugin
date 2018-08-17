@@ -1,3 +1,3 @@
 $(function() {
-    $().myPlugin('myPlugin');
+    $().myPlugin('singleSelect');
 });

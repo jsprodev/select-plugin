@@ -1,6 +1,14 @@
 jQuery.fn.myPlugin = function(className) {
 
-    let xhr = null;
+    if (className === 'singleSelect') {
+        singleSelect('singleSelect');
+    } else {
+        console.log(`Initilize your select with class named 'myPlugin'`);
+    }
+
+
+
+function singleSelect(className) {
 
     // get the select element and its parent
     let select = document.querySelector('.' + className);
@@ -9,30 +17,39 @@ jQuery.fn.myPlugin = function(className) {
 
     // create input to search the items
     let searchSpan = document.createElement('span');
-    searchSpan.id = 'searchSpan';
+    searchSpan.className = 'searchSpan';
     let searchInput = document.createElement('input');
-    searchInput.id = 'searchInput';
     searchInput.className = 'search-input';
     searchInput.placeholder = 'Search: Type atleast 3 characters';
     searchSpan.appendChild(searchInput);
     parent.appendChild(searchSpan);
+
+    // search function onkeypress
+    searchOnKeyPress('search-input');
+}
+
+function searchOnKeyPress(className) {
+    let xhr = null;
+    
+    console.log(searchInput);
+
+    let input, res, items, increment = 0;
 
     let itemsSpan = document.createElement('span');
     itemsSpan.id = 'itemsSpan';
     let ul = document.createElement('ul');
     ul.id = 'items';
 
-    // search function onkeypress
-    let input, res, items, increment = 0;
-    document.getElementById('searchInput').addEventListener('keyup', function(event) {
-        input = document.getElementById('searchInput');
+    document.querySelector('.' + className).addEventListener('keyup', function(event) {
+        input = document.querySelector('.' + className);
 
         if (input.value.length == 0) {
             ul.remove();
             input.classList.remove('search-input-0-border-radius');
         }
+
         // bypass xhr on left and right arrow key press
-        if (event.key == 'ArrowLeft' || event.key == 'ArrowRight') {
+        if (event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'ArrowUp' || event.key == 'ArrowDown') {
             return false;
         }
 
@@ -79,6 +96,9 @@ jQuery.fn.myPlugin = function(className) {
             xhr.send();
         }        
     });
+
+}
+
 
 }
 
