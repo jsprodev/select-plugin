@@ -3,10 +3,10 @@ jQuery.fn.myPlugin = function(className) {
     if (className === 'singleSelect') {
         singleSelect('singleSelect');
     } else {
-        console.log(`Initilize your select with class named 'myPlugin'`);
+        console.log(`Initilize your select with class named 'singleSelect'`);
     }
 
-
+}
 
 function singleSelect(className) {
 
@@ -25,14 +25,12 @@ function singleSelect(className) {
     parent.appendChild(searchSpan);
 
     // search function onkeypress
-    searchOnKeyPress('search-input');
+    searchOnKeyPress('search-input', parent);
 }
 
-function searchOnKeyPress(className) {
+function searchOnKeyPress(className, parent) {
     let xhr = null;
     
-    console.log(searchInput);
-
     let input, res, items, increment = 0;
 
     let itemsSpan = document.createElement('span');
@@ -77,11 +75,7 @@ function searchOnKeyPress(className) {
                         parent.appendChild(itemsSpan);
                         input.classList.add('search-input-0-border-radius');
                         // change input value to selected upon click
-                        document.querySelector('#items').children[i].addEventListener('click', function() {
-                            input.value = this.innerText;
-                            ul.remove();
-                            input.classList.remove('search-input-0-border-radius');
-                        });
+                        selectElement(items, i);
                     }
                 } else {
                     let noResultsFound = document.createElement('li');
@@ -96,11 +90,17 @@ function searchOnKeyPress(className) {
             xhr.send();
         }        
     });
+}
 
+function selectElement(items, index) {
+    document.querySelector('#' + 'items').children[index].addEventListener('click', function() {
+        input.value = this.innerText;
+        ul.remove();
+        input.classList.remove('search-input-0-border-radius');
+    });
 }
 
 
-}
 
         // hover items on arrow down and arrow up
         // if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
