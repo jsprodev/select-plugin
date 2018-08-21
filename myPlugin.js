@@ -1,3 +1,4 @@
+// associate your plugin with jquery so that it can be initialized with it
 jQuery.fn.myPlugin = function(className) {
 
     if (className === 'singleSelect') {
@@ -30,7 +31,7 @@ function singleSelect(className) {
 
 function searchOnKeyPress(className, parent) {
     let xhr = null;
-    
+
     let input, res, items, increment = 0;
 
     let itemsSpan = document.createElement('span');
@@ -75,7 +76,7 @@ function searchOnKeyPress(className, parent) {
                         parent.appendChild(itemsSpan);
                         input.classList.add('search-input-0-border-radius');
                         // change input value to selected upon click
-                        selectElement(items, i);
+                        selectElement(input, ul, items, i);
                     }
                 } else {
                     let noResultsFound = document.createElement('li');
@@ -92,7 +93,7 @@ function searchOnKeyPress(className, parent) {
     });
 }
 
-function selectElement(items, index) {
+function selectElement(input, ul, items, index) {
     document.querySelector('#' + 'items').children[index].addEventListener('click', function() {
         input.value = this.innerText;
         ul.remove();
