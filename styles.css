@@ -19,14 +19,14 @@ html,  body {
     padding: 0px 5px;
 }
 
-.multiInput {
+.tags-input {
     border: none;
     font-size: 12px;
     display: inline-block;
-    width: 70px;
+    width: -webkit-fill-available;
 }
 
-.multiInput:focus {
+.tags-input:focus {
     border: none !important;
 }
 
@@ -83,13 +83,14 @@ input:focus {
     padding: 0 10px;
     border-radius: 32px;
     font-size: 10px;
+    margin: 4px 2px;
 }
 
 .chip:hover {
     background: #ccc;
 }
 
-.closeBtn {
+.close-btn {
     padding-left: 8px;
     color: #888;
     font-weight: bold;
@@ -98,6 +99,6 @@ input:focus {
     cursor: pointer;
 }
 
-.closeBtn:hover {
+.close-btn:hover {
     color: #000;
 }

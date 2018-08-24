@@ -1,3 +1,4 @@
 $(function() {
-    $().myPlugin('singleSelect');
+    // $().myPlugin('singleSelect');
+    $().myPlugin('multiSelect');
 });

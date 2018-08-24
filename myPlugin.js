@@ -1,35 +1,51 @@
 // associate your plugin with jquery so that it can be initialized with it
 jQuery.fn.myPlugin = function(className) {
 
-    if (className === 'singleSelect') {
-        singleSelect('singleSelect');
-    } else {
-        console.log(`Initilize your select with class named 'singleSelect'`);
-    }
-
-}
-
-function singleSelect(className) {
-
     // get the select element and its parent
     let select = document.querySelector('.' + className);
     let parent = select.parentElement;
     select.classList.add('hide');
 
-    // create input to search the items
-    let searchSpan = document.createElement('span');
-    searchSpan.className = 'searchSpan';
-    let searchInput = document.createElement('input');
-    searchInput.className = 'search-input';
-    searchInput.placeholder = 'Search: Type atleast 3 characters';
-    searchSpan.appendChild(searchInput);
-    parent.appendChild(searchSpan);
+    if (className === 'singleSelect') {
+        // create input span 
+        let searchSpan = document.createElement('span');
+        searchSpan.className = 'search-span';
+        // create input to search the items
+        let searchInput = document.createElement('input');
+        searchInput.className = 'search-input';
+        searchInput.placeholder = 'Type atleast 3 characters';
+        // append the input to input span
+        searchSpan.appendChild(searchInput);
+        parent.appendChild(searchSpan);
+        // search function onkeypress
+        searchOnKeyPress('search-input', parent, className);
+    } 
+     else {
+        // create span which will have seached chips in it
+        let chipSpan = document.createElement('span');
+        chipSpan.classList.add('search-input');
+        chipSpan.style = 'display: inline-block';
+        // create input span
+        let searchSpan = document.createElement('span');
+        searchSpan.className = 'search-span';
+        searchSpan.style = 'line-height: 29px';
+        // create input to search
+        let searchInput = document.createElement('input');
+        searchInput.className = 'tags-input';
+        searchInput.placeholder = 'Type atleast 3 characters';
+        // append search input in seaarch span
+        searchSpan.appendChild(searchInput);
+        // append search span in chip span
+        chipSpan.appendChild(searchSpan);
+        // append chip span in parent element
+        parent.appendChild(chipSpan);
+        // search function onkeypress
+        searchOnKeyPress('tags-input', parent, className);
+    }
 
-    // search function onkeypress
-    searchOnKeyPress('search-input', parent);
 }
 
-function searchOnKeyPress(className, parent) {
+function searchOnKeyPress(inputClassName, parent, selectClassName) {
     let xhr = null;
 
     let input, res, items, increment = 0;
@@ -39,8 +55,8 @@ function searchOnKeyPress(className, parent) {
     let ul = document.createElement('ul');
     ul.id = 'items';
 
-    document.querySelector('.' + className).addEventListener('keyup', function(event) {
-        input = document.querySelector('.' + className);
+    document.querySelector('.' + inputClassName).addEventListener('keyup', function(event) {
+        input = document.querySelector('.' + inputClassName);
 
         if (input.value.length == 0) {
             ul.remove();
@@ -76,7 +92,7 @@ function searchOnKeyPress(className, parent) {
                         parent.appendChild(itemsSpan);
                         input.classList.add('search-input-0-border-radius');
                         // change input value to selected upon click
-                        selectElement(input, ul, items, i);
+                        selectElement(input, ul, items, i, selectClassName);
                     }
                 } else {
                     let noResultsFound = document.createElement('li');
@@ -93,76 +109,41 @@ function searchOnKeyPress(className, parent) {
     });
 }
 
-function selectElement(input, ul, items, index) {
+function selectElement(input, ul, items, index, selectClassName) {
+
     document.querySelector('#' + 'items').children[index].addEventListener('click', function() {
-        input.value = this.innerText;
+
+        // if multiselect
+        if (selectClassName === 'multiSelect') {
+            let parent = (input.parentElement).parentElement;
+                    // create chip span
+            let chip = document.createElement('span');
+            chip.classList.add('chip');
+            // assign value of selected item to chip
+            chip.innerText = this.innerText;
+            // create close button for chip
+            let closeBtn = document.createElement('span');
+            closeBtn.classList.add('close-btn');
+            closeBtn.innerHTML = '&times';
+            // append close button to chip
+            chip.appendChild(closeBtn);
+            // append chip to parent 
+            parent.appendChild(chip);
+            // change the input to placeholder text
+            input.value = '';
+            input.placeholder = 'Type atleast 3 characters';
+            // eventlistener for close button of chip
+            let closeBtns = document.querySelectorAll('.close-btn');
+            for(let i = 0; i < closeBtns.length; i ++) {
+                closeBtns[i].addEventListener('click', function() {
+                    this.parentElement.style.display = 'none';
+                    console.log('i am fired');
+                });
+            }
+        } else { 
+            input.value = this.innerText;
+        }
         ul.remove();
         input.classList.remove('search-input-0-border-radius');
     });
 }
-
-
-
-        // hover items on arrow down and arrow up
-        // if (event.key == 'ArrowUp' || event.key == 'ArrowDown') {
-        //     console.log('ArrowUp or ArrowDown is fired');
-        //     let itemsLength  = ul.children.length;
-
-        //     if (ul.children.length > 0) {
-        //         if (increment == 0) {
-        //             console.log('if is fired ' + increment + ' , ' + itemsLength);
-        //             ul.children[increment].style.backgroundColor = '#5AC8FA';
-        //             ul.children[increment].style.color = 'white';
-        //             increment ++;
-        //         } else if (increment > 0 && increment < itemsLength) {
-        //             console.log('else if is fired ' + increment + ' , ' + itemsLength);
-        //             ul.children[increment - 1].style.backgroundColor = 'white';
-        //             ul.children[increment - 1].style.color = 'black';
-        //             ul.children[increment].style.backgroundColor = '#5AC8FA';
-        //             ul.children[increment].style.color = 'white';
-        //             increment ++;
-        //         } else {
-        //             console.log('else is fired ' + increment + ' , ' + itemsLength);
-        //             ul.children[increment - 1].style.backgroundColor = 'white';
-        //             ul.children[increment - 1].style.color = 'black';
-        //             increment = 0;
-        //             return false;
-        //         }
-        //     }
-        //     return false;
-        // }
-
-
- // convert select options to li items
-    // let itemsSpan = document.createElement('span');
-    // itemsSpan.id = 'itemsSpan';
-    // let ul = document.createElement('ul');
-    // ul.id = 'items';
-    // for(let i = 0; i < select.length; i++) {
-    //     let items = document.createElement('li');
-    //     items.innerHTML = select[i].innerText;
-    //     ul.appendChild(items);
-    // }
-    // parent.removeChild(select);
-    // itemsSpan.appendChild(ul);
-    // parent.appendChild(itemsSpan);
-
-    // // hide the li items span by default
-    // ul.classList.add('hide');
-
-// initializePlugin();
-
-    // ul = document.querySelector('#items')
-    // items = ul.getElementsByTagName('li');
-    // for (var i = 0; i < items.length; i++) {
-    //     if (items[i].innerText.toLowerCase().indexOf(input.value.toLowerCase()) > -1) {
-    //         document.querySelector('#items').classList.remove('hide');
-    //         document.querySelector('#items').children[i].style.display = ''
-    //         // change input value to selected upon click
-    //         document.querySelector('#items').children[i].addEventListener('click', function() {
-    //             input.value = this.innerText;
-    //         });
-    //     } else {
-    //         document.querySelector('#items').children[i].style.display = 'none';    
-    //     }
-    // }
