@@ -84,7 +84,7 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
                 // make li's of search results
                 if (res != null) {
                     for (let i  = 0; i < res.length; i ++) {
-                        console.log(res[i].name); // debugging 
+                        // console.log(res[i].name); // debugging 
                         items = document.createElement('li');
                         items.innerHTML = res[i].name;
                         ul.appendChild(items);
@@ -109,18 +109,25 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
     });
 }
 
+let itemsArray = [];
 function selectElement(input, ul, items, index, selectClassName) {
-
     document.querySelector('#' + 'items').children[index].addEventListener('click', function() {
-
         // if multiselect
         if (selectClassName === 'multiSelect') {
+            // get parent element
             let parent = (input.parentElement).parentElement;
-                    // create chip span
+            // create chip span
             let chip = document.createElement('span');
             chip.classList.add('chip');
-            // assign value of selected item to chip
-            chip.innerText = this.innerText;
+            // assign value of selected item to chip , and check for uniqueness
+            // itemsArray.push(this.innerHTML);
+            // itemsArray.find( (value) => { 
+            //     if ( value == this.innerText) {
+            //         chip.innerText = this.innerHTML;
+            //     }
+            // }); 
+
+            chip.innerText = this.innerHTML;
             // create close button for chip
             let closeBtn = document.createElement('span');
             closeBtn.classList.add('close-btn');
@@ -140,6 +147,7 @@ function selectElement(input, ul, items, index, selectClassName) {
                     console.log('i am fired');
                 });
             }
+            // console.log(itemsArray);
         } else { 
             input.value = this.innerText;
         }
