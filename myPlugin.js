@@ -119,29 +119,28 @@ function selectElement(input, ul, items, index, selectClassName) {
             // create chip span
             let chip = document.createElement('span');
             chip.classList.add('chip');
-            // assign value of selected item to chip , and check for uniqueness
-            // itemsArray.push(this.innerHTML);
-            // itemsArray.find( (value) => { 
-            //     if ( value == this.innerText) {
-            //         chip.innerText = this.innerHTML;
-            //     }
-            // }); 
 
-            chip.innerText = this.innerHTML;
-            // create close button for chip
-            let closeBtn = document.createElement('span');
-            closeBtn.classList.add('close-btn');
-            closeBtn.innerHTML = '&times';
-            // append close button to chip
-            chip.appendChild(closeBtn);
-            // append chip to parent 
-            parent.appendChild(chip);
-            // change the input to placeholder text
-            input.value = '';
-            input.placeholder = 'Type atleast 3 characters';
+            // assign value of selected item to chip , and check for uniqueness
+            if (itemsArray.indexOf(this.innerHTML) === -1) {
+                itemsArray.push(this.innerHTML);
+                chip.innerText = this.innerHTML;
+                 // create close button for chip
+                let closeBtn = document.createElement('span');
+                closeBtn.classList.add('close-btn');
+                closeBtn.innerHTML = '&times';
+                // append close button to chip
+                chip.appendChild(closeBtn);
+                // append chip to parent 
+                parent.appendChild(chip);
+                // change the input to placeholder text
+                input.value = '';
+                input.placeholder = 'Type atleast 3 characters';
+                // console.log(itemsArray);
+            }
+           
             // eventlistener for close button of chip
             let closeBtns = document.querySelectorAll('.close-btn');
-            for(let i = 0; i < closeBtns.length; i ++) {
+            for (let i = 0; i < closeBtns.length; i ++) {
                 closeBtns[i].addEventListener('click', function() {
                     this.parentElement.style.display = 'none';
                     console.log('i am fired');
