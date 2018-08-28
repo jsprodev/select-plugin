@@ -120,6 +120,7 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
 }
 
 let itemsArray = [];
+let count = 0;
 function selectElement(input, ul, items, index, selectClassName) {
     document.querySelector('#' + 'items').children[index].addEventListener('click', function() {
         // get the select element
@@ -138,11 +139,11 @@ function selectElement(input, ul, items, index, selectClassName) {
                 itemsArray.push(this.innerHTML);
                 chip.innerText = this.innerHTML;
 
-                let option = select.options[index];
+                let option = select.options[index + count];
                 option.setAttribute('selected', true);
 
                 // select.options[index].selected = true;
-                console.log(option);
+                // console.log(option);
 
 
                  // create close button for chip
@@ -172,12 +173,14 @@ function selectElement(input, ul, items, index, selectClassName) {
         }
         ul.remove();
 
-        // let length = select.options.length;
-        // for (i = 0; i < length; i++) {
-        //     if (! select.options[i] == 'selected') {
-        //         select.options[i] = null;   
-        //     }
-        // }
+        let length = select.options.length;
+        for (let i = length-1; i >= count; i--) {
+            if (select.options[i].selected == false) {
+                console.log(select.options[i].value + ' removed has index: ' + i);  
+                select.options[i] = null;
+            }
+        }
+        count++;
 
         input.classList.remove('search-input-0-border-radius');
     });
