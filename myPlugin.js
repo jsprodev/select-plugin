@@ -22,6 +22,7 @@ jQuery.fn.myPlugin = function(className) {
     } 
      else {
         // create span which will have seached chips in it
+        select.multiple = true;
         let chipSpan = document.createElement('span');
         chipSpan.classList.add('search-input');
         chipSpan.style = 'display: inline-block';
@@ -85,6 +86,15 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
                 if (res != null) {
                     for (let i  = 0; i < res.length; i ++) {
                         // console.log(res[i].name); // debugging 
+
+                        // create options for hidden select
+                        let select = document.querySelector('.' + selectClassName);
+                        let opt = document.createElement('option');
+                        opt.value = res[i].name;
+                        opt.innerHTML = res[i].name;
+                        select.appendChild(opt);
+
+                        // create li's of response recieved 
                         items = document.createElement('li');
                         items.innerHTML = res[i].name;
                         ul.appendChild(items);
@@ -112,6 +122,9 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
 let itemsArray = [];
 function selectElement(input, ul, items, index, selectClassName) {
     document.querySelector('#' + 'items').children[index].addEventListener('click', function() {
+        // get the select element
+        let select = document.querySelector('.' + selectClassName);
+        
         // if multiselect
         if (selectClassName === 'multiSelect') {
             // get parent element
@@ -124,6 +137,14 @@ function selectElement(input, ul, items, index, selectClassName) {
             if (itemsArray.indexOf(this.innerHTML) === -1) {
                 itemsArray.push(this.innerHTML);
                 chip.innerText = this.innerHTML;
+
+                let option = select.options[index];
+                option.setAttribute('selected', true);
+
+                // select.options[index].selected = true;
+                console.log(option);
+
+
                  // create close button for chip
                 let closeBtn = document.createElement('span');
                 closeBtn.classList.add('close-btn');
@@ -143,7 +164,6 @@ function selectElement(input, ul, items, index, selectClassName) {
             for (let i = 0; i < closeBtns.length; i ++) {
                 closeBtns[i].addEventListener('click', function() {
                     this.parentElement.style.display = 'none';
-                    console.log('i am fired');
                 });
             }
             // console.log(itemsArray);
@@ -151,6 +171,14 @@ function selectElement(input, ul, items, index, selectClassName) {
             input.value = this.innerText;
         }
         ul.remove();
+
+        // let length = select.options.length;
+        // for (i = 0; i < length; i++) {
+        //     if (! select.options[i] == 'selected') {
+        //         select.options[i] = null;   
+        //     }
+        // }
+
         input.classList.remove('search-input-0-border-radius');
     });
 }
