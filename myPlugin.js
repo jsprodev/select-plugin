@@ -1,9 +1,15 @@
+let itemsArray = [];
+// count: when a request is made , every time options are generated dynamically counter has to incremented likewise
+let count = 0;
+
 // associate your plugin with jquery so that it can be initialized with it
 jQuery.fn.myPlugin = function(className) {
 
     // get the select element and its parent
     let select = document.querySelector('.' + className);
     let parent = select.parentElement;
+    // assign name attribute to select
+    select.name = 'sp';
     select.classList.add('hide');
 
     if (className === 'singleSelect') {
@@ -19,8 +25,7 @@ jQuery.fn.myPlugin = function(className) {
         parent.appendChild(searchSpan);
         // search function onkeypress
         searchOnKeyPress('search-input', parent, className);
-    } 
-     else {
+    } else {
         // create span which will have seached chips in it
         select.multiple = true;
         let chipSpan = document.createElement('span');
@@ -43,57 +48,53 @@ jQuery.fn.myPlugin = function(className) {
         // search function onkeypress
         searchOnKeyPress('tags-input', parent, className);
     }
-
 }
 
 function searchOnKeyPress(inputClassName, parent, selectClassName) {
     let xhr = null;
-
     let input, res, items, increment = 0;
-
     let itemsSpan = document.createElement('span');
     itemsSpan.id = 'itemsSpan';
     let ul = document.createElement('ul');
     ul.id = 'items';
-
     document.querySelector('.' + inputClassName).addEventListener('keyup', function(event) {
         input = document.querySelector('.' + inputClassName);
-
         if (input.value.length == 0) {
             ul.remove();
             input.classList.remove('search-input-0-border-radius');
         }
-
         // bypass xhr on left and right arrow key press
         if (event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'ArrowUp' || event.key == 'ArrowDown') {
             return false;
         }
-
         if (input.value.length >= 3) {
             if (xhr != null) {
                 xhr.abort();
                 console.log('abort is fired');
             }
-
             ul.innerHTML = '';
             xhr = new XMLHttpRequest();
-
             xhr.onload = function () {
                 if (xhr.status >= 200 && xhr.status < 400) {
                     res = JSON.parse(xhr.responseText);
                 }
                 // make li's of search results
                 if (res != null) {
+                    // for every request in singleSelect remove all the options
+                    let select = document.querySelector('.' + selectClassName);
+                    if (selectClassName === 'singleSelect') {
+                        for (let i = select.options.length - 1; i >= 0; i --) {
+                            console.log(select.options[i] + ' i am fired ');
+                            select.options[i] = null;
+                        }
+                    }
                     for (let i  = 0; i < res.length; i ++) {
-                        // console.log(res[i].name); // debugging 
-
+                        // console.log(res[i].name); // debugging
                         // create options for hidden select
-                        let select = document.querySelector('.' + selectClassName);
                         let opt = document.createElement('option');
                         opt.value = res[i].name;
                         opt.innerHTML = res[i].name;
                         select.appendChild(opt);
-
                         // create li's of response recieved 
                         items = document.createElement('li');
                         items.innerHTML = res[i].name;
@@ -119,13 +120,10 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
     });
 }
 
-let itemsArray = [];
-let count = 0;
 function selectElement(input, ul, items, index, selectClassName) {
     document.querySelector('#' + 'items').children[index].addEventListener('click', function() {
         // get the select element
         let select = document.querySelector('.' + selectClassName);
-        
         // if multiselect
         if (selectClassName === 'multiSelect') {
             // get parent element
@@ -133,19 +131,13 @@ function selectElement(input, ul, items, index, selectClassName) {
             // create chip span
             let chip = document.createElement('span');
             chip.classList.add('chip');
-
             // assign value of selected item to chip , and check for uniqueness
             if (itemsArray.indexOf(this.innerHTML) === -1) {
                 itemsArray.push(this.innerHTML);
                 chip.innerText = this.innerHTML;
-
+                // add selected attribute to selected option
                 let option = select.options[index + count];
                 option.setAttribute('selected', true);
-
-                // select.options[index].selected = true;
-                // console.log(option);
-
-
                  // create close button for chip
                 let closeBtn = document.createElement('span');
                 closeBtn.classList.add('close-btn');
@@ -159,7 +151,6 @@ function selectElement(input, ul, items, index, selectClassName) {
                 input.placeholder = 'Type atleast 3 characters';
                 // console.log(itemsArray);
             }
-           
             // eventlistener for close button of chip
             let closeBtns = document.querySelectorAll('.close-btn');
             for (let i = 0; i < closeBtns.length; i ++) {
@@ -167,21 +158,26 @@ function selectElement(input, ul, items, index, selectClassName) {
                     this.parentElement.style.display = 'none';
                 });
             }
-            // console.log(itemsArray);
+            // remove the rest of options which are not selected
+            let length = select.options.length;
+            for (let i = length-1; i >= count; i --) {
+                if (select.options[i].selected == false) {
+                    select.options[i] = null;
+                }
+            }
+            count ++;
         } else { 
             input.value = this.innerText;
-        }
-        ul.remove();
-
-        let length = select.options.length;
-        for (let i = length-1; i >= count; i--) {
-            if (select.options[i].selected == false) {
-                console.log(select.options[i].value + ' removed has index: ' + i);  
-                select.options[i] = null;
+            let option = select.options[index];
+            option.setAttribute('selected', true);
+            // remove the rest of options which are not selected
+            for (let i = select.options.length - 1; i >= count; i --) {
+                if (select.options[i].selected == false) {
+                    select.options[i] = null;
+                }
             }
         }
-        count++;
-
+        ul.remove();
         input.classList.remove('search-input-0-border-radius');
     });
 }
