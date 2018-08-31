@@ -60,6 +60,10 @@ html,  body {
     font-size: 13px;
 }
 
+#itemsSpan ul li:last-child {
+    border-bottom: none;
+}
+
 #itemsSpan ul li:hover {
     background-color:#5AC8FA !important;
     color: white !important;

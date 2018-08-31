@@ -1,6 +1,6 @@
 let itemsArray = [];
 // count: when a request is made , every time options are generated dynamically counter has to incremented likewise
-let count = 0;
+let count = 0, url = 'https://restcountries.eu/rest/v2/name/';
 
 // associate your plugin with jquery so that it can be initialized with it
 jQuery.fn.myPlugin = function(className) {
@@ -83,16 +83,17 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
                     // for every request in singleSelect remove all the options
                     let select = document.querySelector('.' + selectClassName);
                     if (selectClassName === 'singleSelect') {
+                        input.classList.add('search-input-0-border-radius');
                         for (let i = select.options.length - 1; i >= 0; i --) {
-                            console.log(select.options[i] + ' i am fired ');
                             select.options[i] = null;
                         }
+                    } else {
+                        (input.parentElement).parentElement.classList.add('search-input-0-border-radius');
                     }
                     for (let i  = 0; i < res.length; i ++) {
-                        // console.log(res[i].name); // debugging
                         // create options for hidden select
                         let opt = document.createElement('option');
-                        opt.value = res[i].name;
+                        opt.value = res[i].alpha2Code;
                         opt.innerHTML = res[i].name;
                         select.appendChild(opt);
                         // create li's of response recieved 
@@ -101,7 +102,7 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
                         ul.appendChild(items);
                         itemsSpan.appendChild(ul);
                         parent.appendChild(itemsSpan);
-                        input.classList.add('search-input-0-border-radius');
+                        // input.classList.add('search-input-0-border-radius');
                         // change input value to selected upon click
                         selectElement(input, ul, items, i, selectClassName);
                     }
@@ -114,7 +115,7 @@ function searchOnKeyPress(inputClassName, parent, selectClassName) {
                     input.classList.add('search-input-0-border-radius');
                 }
             }
-            xhr.open('GET', 'https://restcountries.eu/rest/v2/name/' + input.value , true);
+            xhr.open('GET', url + input.value , true);
             xhr.send();
         }        
     });
@@ -149,13 +150,14 @@ function selectElement(input, ul, items, index, selectClassName) {
                 // change the input to placeholder text
                 input.value = '';
                 input.placeholder = 'Type atleast 3 characters';
-                // console.log(itemsArray);
             }
             // eventlistener for close button of chip
             let closeBtns = document.querySelectorAll('.close-btn');
             for (let i = 0; i < closeBtns.length; i ++) {
                 closeBtns[i].addEventListener('click', function() {
-                    this.parentElement.style.display = 'none';
+                    this.parentElement.remove();
+                    itemsArray.pop(this.innerHTML);
+                    select.options[index + count] = null;
                 });
             }
             // remove the rest of options which are not selected
@@ -165,6 +167,7 @@ function selectElement(input, ul, items, index, selectClassName) {
                     select.options[i] = null;
                 }
             }
+            (input.parentElement).parentElement.classList.remove('search-input-0-border-radius');
             count ++;
         } else { 
             input.value = this.innerText;
